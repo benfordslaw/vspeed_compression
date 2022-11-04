@@ -5,21 +5,28 @@ import cv2 as cv
 from numpy.lib.function_base import average
 import random
 import numpy as np
-import glob
 from tqdm import tqdm
-import matplotlib.pyplot as plt
 import math
 
-filename = sys.argv[1]
-frame_dist = int(sys.argv[2])
-min_mag_r = float(sys.argv[3])
-max_mag_r = float(sys.argv[4])
-pad = 25
+import argparse
+parser = argparse.ArgumentParser()
 
-def takeSecond(elem):
-    return elem[1]
+parser.add_argument("-i", "--input", help="Path to input video filename", type = str)
+parser.add_argument("-fd", "--framedist", help="Distance between frames", default = 1, type = int)
+parser.add_argument("-min", "--minmag", help="Lower threshold for window speed shown", default = 0.0, type = float)
+parser.add_argument("-max", "--maxmag", help="Upper threshold for window speed shown", default = 1.0, type = float)
+parser.add_argument("-p", "--padding", help="Padding to be added on each side of video", default = 25, type = int)
+
+args = parser.parse_args()
+
+filename = args.input
+frame_dist = args.framedist
+min_mag_r = args.minmag
+max_mag_r = args.maxmag
+pad = args.padding 
 
 def init_normalize(total_frames, cap, sample_size, thres):
+    print("initializing speed normalization value")
     accum_mag = []
 
     for _ in tqdm(range(sample_size)):
@@ -51,17 +58,13 @@ def main():
     cap = cv.VideoCapture(cv.samples.findFile(filename))
     cap_w = cap.get(3)
     cap_h = cap.get(4)
-    min_dim = min(cap_w, cap_h)
-    cap_w *= 200 / min_dim
-    cap_h *= 200 / min_dim
     cap_w = int(cap_w)
     cap_h = int(cap_h)
     total = int(cap.get(7))
     thres = 10
-    #title_txt = filename.split("file_in/")[1]
+    title_txt = filename
 
     _, fast_img = cap.read()
-    fast_img = cv.resize(fast_img, (cap_w, cap_h), cv.INTER_NEAREST)
     prvs = cv.cvtColor(fast_img, cv.COLOR_BGR2GRAY)
 
     max_mag = init_normalize(total, cap, 100, thres)
@@ -70,12 +73,13 @@ def main():
     title_txt = str(min_mag_allowed) + " - " + str(max_mag_allowed)
     (txt_width, txt_height), baseline = cv.getTextSize(title_txt, cv.FONT_HERSHEY_PLAIN, 1, 1)
 
+    print("ripping frames")
+
     for frame_ct in tqdm(np.arange(0, total-frame_dist, frame_dist)):
         accum_img = np.zeros_like(fast_img)
 
         cap.set(1, frame_ct + frame_dist)
         _, f2 = cap.read()
-        f2 = cv.resize(f2, (cap_w, cap_h), cv.INTER_NEAREST)
 
         next = cv.cvtColor(f2, cv.COLOR_BGR2GRAY) 
 
@@ -116,7 +120,7 @@ def main():
 
         pad_img = cv.copyMakeBorder(v_condensed, pad, pad, pad, pad, cv.BORDER_CONSTANT)
         #txt_img = cv.putText(pad_img, title_txt, (pad, pad + mag.shape[0] + txt_height+baseline), cv.FONT_HERSHEY_PLAIN, 1, (0,255,255), 1, cv.LINE_8)
-        cv.imwrite("output/min" + str(min_mag_r) + "_" + str('{:0>6}'.format(frame_ct)) + ".png", pad_img)
+        cv.imwrite("output/" + str('{:0>6}'.format(frame_ct)) + ".png", pad_img)
 
         prvs = cv.cvtColor(f2, cv.COLOR_BGR2GRAY) 
 

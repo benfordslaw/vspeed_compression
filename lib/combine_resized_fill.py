@@ -10,12 +10,24 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import math
 
-filename = sys.argv[1]
-frame_dist = int(sys.argv[2])
-ds_factor = float(sys.argv[3])
-min_mag_r = 0
-max_mag_r = 1
-pad = 25
+import argparse
+parser = argparse.ArgumentParser()
+
+parser.add_argument("-i", "--input", help="Path to input video filename", type = str)
+parser.add_argument("-fd", "--framedist", help="Distance between frames", default = 1, type = int)
+parser.add_argument("-ds", "--downscale", help="Downscaling factor for faster pixels", default = 0.025, type = float)
+parser.add_argument("-min", "--minmag", help="Lower threshold for window speed shown", default = 0.0, type = float)
+parser.add_argument("-max", "--maxmag", help="Upper threshold for window speed shown", default = 1.0, type = float)
+parser.add_argument("-p", "--padding", help="Padding to be added on each side of video", default = 25, type = int)
+
+args = parser.parse_args()
+
+filename = args.input
+frame_dist = args.framedist
+ds_factor = args.downscale
+min_mag_r = args.minmag
+max_mag_r = args.maxmag
+pad = args.padding
 
 def takeSecond(elem):
     return elem[1]
