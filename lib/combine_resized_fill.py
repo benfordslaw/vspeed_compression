@@ -1,6 +1,7 @@
 import sys
 sys.path.append('/Users/benkrummenacher/opt/anaconda3/envs/vpype_env/lib/python3.10/site-packages')
 
+import os
 import cv2 as cv
 from numpy.lib.function_base import average
 import random
@@ -17,6 +18,7 @@ parser.add_argument("-ds", "--downscale", help="Downscaling factor for faster pi
 parser.add_argument("-min", "--minmag", help="Lower threshold for window speed shown", default = 0.0, type = float)
 parser.add_argument("-max", "--maxmag", help="Upper threshold for window speed shown", default = 1.0, type = float)
 parser.add_argument("-p", "--padding", help="Padding to be added on each side of video", default = 25, type = int)
+parser.add_argument("-o", "--output", help="Output directory to dump .png", default = "output", type = str)
 parser.add_argument("-nf", "--no-fill", default=False, action="store_true", help="Turn off filling gaps")
 
 args = parser.parse_args()
@@ -27,6 +29,7 @@ ds_factor = args.downscale
 min_mag_r = args.minmag
 max_mag_r = args.maxmag
 pad = args.padding
+output = args.output
 
 def init_normalize(total_frames, cap, sample_size, thres):
     accum_mag = []
@@ -78,6 +81,9 @@ def main():
     max_mag_allowed = max_mag * max_mag_r
     (txt_width, txt_height), baseline = cv.getTextSize(title_txt, cv.FONT_HERSHEY_PLAIN, 1, 1)
 
+    if not os.path.exists(output):
+        os.makedirs(output)
+
     for frame_ct in tqdm(np.arange(0, total-frame_dist, frame_dist)):
         accum_img = np.zeros_like(fast_img)
 
@@ -124,7 +130,7 @@ def main():
                         
         pad_img = cv.copyMakeBorder(accum_img, pad, pad, pad, pad, cv.BORDER_CONSTANT)
         txt_img = cv.putText(pad_img, title_txt, (pad, pad + mag.shape[0] + txt_height+baseline), cv.FONT_HERSHEY_PLAIN, 1, (0,255,255), 1, cv.LINE_8)
-        cv.imwrite("output/" + str(thres) + "_" + str('{:0>6}'.format(frame_ct)) + ".png", txt_img)
+        cv.imwrite(output + "/" + str(thres) + "_" + str('{:0>6}'.format(frame_ct)) + ".png", txt_img)
 
         prvs = cv.cvtColor(f2, cv.COLOR_BGR2GRAY) 
 

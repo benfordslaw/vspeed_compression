@@ -1,6 +1,7 @@
 import sys
 sys.path.append('/Users/benkrummenacher/opt/anaconda3/envs/vpype_env/lib/python3.10/site-packages')
 
+import os
 import cv2 as cv
 from numpy.lib.function_base import average
 import random
@@ -14,6 +15,7 @@ parser.add_argument("-i", "--input", help="Path to input video filename", type =
 parser.add_argument("-w", "--winsize", help="Optical flow window size", default = 10, type = int)
 parser.add_argument("-fd", "--framedist", help="Distance between frames", default = 1, type = int)
 parser.add_argument("-min", "--minmag", help="Minimum speed for pixels to update, out of 255", default = 50, type = int)
+parser.add_argument("-o", "--output", help="Output directory to dump .png", default = "output", type = str)
 
 args = parser.parse_args()
 
@@ -21,6 +23,7 @@ filename = args.input
 thres = args.winsize
 frame_dist = args.framedist
 mag_thresh = args.minmag
+output = args.output
 
 def init_normalize(total_frames, cap, sample_size):
 
@@ -64,6 +67,9 @@ def main():
     max_mag /= 255
     prv_norm_mag /= max_mag
 
+    if not os.path.exists(output):
+        os.makedirs(output)
+
     for frame_ct in tqdm(np.arange(0, total-1, frame_dist)):
 
         cap.set(1, frame_ct)
@@ -80,7 +86,7 @@ def main():
                 elif prv_norm_mag[i, j] >= mag_thresh:
                     acc_img_rgb[i, j] = frame2[i, j]
 
-        cv.imwrite("output/" + str(thres) + "_" + str('{:0>4}'.format(frame_ct)) + ".png", acc_img_rgb)
+        cv.imwrite(output + "/" + str(thres) + "_" + str('{:0>4}'.format(frame_ct)) + ".png", acc_img_rgb)
 
         prvs = cv.cvtColor(frame2, cv.COLOR_BGR2GRAY)
 

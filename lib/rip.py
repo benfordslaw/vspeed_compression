@@ -1,6 +1,7 @@
 import sys
 sys.path.append('/Users/benkrummenacher/opt/anaconda3/envs/vpype_env/lib/python3.10/site-packages')
 
+import os
 import cv2 as cv
 from numpy.lib.function_base import average
 import random
@@ -16,6 +17,7 @@ parser.add_argument("-fd", "--framedist", help="Distance between frames", defaul
 parser.add_argument("-min", "--minmag", help="Lower threshold for window speed shown", default = 0.0, type = float)
 parser.add_argument("-max", "--maxmag", help="Upper threshold for window speed shown", default = 1.0, type = float)
 parser.add_argument("-p", "--padding", help="Padding to be added on each side of video", default = 25, type = int)
+parser.add_argument("-o", "--output", help="Output directory to dump .png", default = "output", type = str)
 
 args = parser.parse_args()
 
@@ -24,6 +26,7 @@ frame_dist = args.framedist
 min_mag_r = args.minmag
 max_mag_r = args.maxmag
 pad = args.padding 
+output = args.output
 
 def init_normalize(total_frames, cap, sample_size, thres):
     print("initializing speed normalization value")
@@ -73,6 +76,9 @@ def main():
     title_txt = str(min_mag_allowed) + " - " + str(max_mag_allowed)
     (txt_width, txt_height), baseline = cv.getTextSize(title_txt, cv.FONT_HERSHEY_PLAIN, 1, 1)
 
+    if not os.path.exists(output):
+        os.makedirs(output)
+
     print("ripping frames")
 
     for frame_ct in tqdm(np.arange(0, total-frame_dist, frame_dist)):
@@ -120,7 +126,7 @@ def main():
 
         pad_img = cv.copyMakeBorder(v_condensed, pad, pad, pad, pad, cv.BORDER_CONSTANT)
         #txt_img = cv.putText(pad_img, title_txt, (pad, pad + mag.shape[0] + txt_height+baseline), cv.FONT_HERSHEY_PLAIN, 1, (0,255,255), 1, cv.LINE_8)
-        cv.imwrite("output/" + str('{:0>6}'.format(frame_ct)) + ".png", pad_img)
+        cv.imwrite(output + "/" + str('{:0>6}'.format(frame_ct)) + ".png", pad_img)
 
         prvs = cv.cvtColor(f2, cv.COLOR_BGR2GRAY) 
 

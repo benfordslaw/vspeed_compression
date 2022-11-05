@@ -1,6 +1,7 @@
 import sys
 sys.path.append('/Users/benkrummenacher/opt/anaconda3/envs/vpype_env/lib/python3.10/site-packages')
 
+import os
 import cv2 as cv
 from numpy.lib.function_base import average
 import random
@@ -14,6 +15,7 @@ parser.add_argument("-i", "--input", help="Path to input video filename", type =
 parser.add_argument("-w", "--winsize", help="Optical flow window size", default = 10, type = int)
 parser.add_argument("-fd", "--framedist", help="Distance between frames", default = 1, type = int)
 parser.add_argument("-d", "--depth", help="Depth of mag window analysis", default = 2, type = int)
+parser.add_argument("-o", "--output", help="Output directory to dump .png", default = "output", type = str)
 
 args = parser.parse_args()
 
@@ -21,6 +23,7 @@ filename = args.input
 thres = args.winsize
 frame_dist = args.framedist
 depth = args.depth
+output = args.output
 
 def get_mean_mags(accum_means, mag_in):
     if len(accum_means) < 2^depth + 1:
@@ -80,6 +83,9 @@ def main():
 
     num_seps = len(accum_means)-1
 
+    if not os.path.exists(output):
+        os.makedirs(output)
+
     for frame_ct in tqdm(np.arange(0, total-1, frame_dist)):
         for k in range(len(accum_means)-1):
             cap.set(1, (frame_ct * (num_seps - k))%total)
@@ -98,7 +104,7 @@ def main():
                     if mag[i][j] >= accum_means[k] and mag[i][j] < accum_means[k+1]:
                         accum_img[i][j] = f2[i][j]
     
-        cv.imwrite("output/" + str(thres) + "_" + str('{:0>6}'.format(frame_ct)) + ".png", accum_img)
+        cv.imwrite(output + "/" + str(thres) + "_" + str('{:0>6}'.format(frame_ct)) + ".png", accum_img)
 
 if __name__ == "__main__":
     main()
