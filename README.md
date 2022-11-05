@@ -4,6 +4,8 @@ various methods to compress a video based on the speed of things moving in it.
 
 ## usage
 
+mkdir `vspeed_compression/output/`, required for outputting .png
+
 ### rip
 
 reduce each frame to only things that are moving fast enough. condense into the middle of the frame.
@@ -21,6 +23,12 @@ normalize the video's speed by making faster things smaller than slower things A
 normalize the video's speed by making the frame rate of faster things smaller than that of slower things
 
 `combine_sep_speed.py [-h] [-i INPUT] [-w WINSIZE] [-fd FRAMEDIST] [-d DEPTH]`
+
+### update only past threshold
+
+only update parts of a video that are moving faster than a given threshold (out of 255, default 50)
+
+`update_only_past_thresh.py [-h] [-i INPUT] [-w WINSIZE] [-fd FRAMEDIST] [-min MINMAG]`
 
 ### download videos
 

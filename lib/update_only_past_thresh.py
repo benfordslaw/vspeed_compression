@@ -5,16 +5,22 @@ import cv2 as cv
 from numpy.lib.function_base import average
 import random
 import numpy as np
-import glob
 from tqdm import tqdm
-import matplotlib.pyplot as plt
 
-thres = int(sys.argv[3])
-mag_thresh = int(sys.argv[2])
-frame_dist = int(sys.argv[4])
+import argparse
+parser = argparse.ArgumentParser()
 
-def takeSecond(elem):
-    return elem[1]
+parser.add_argument("-i", "--input", help="Path to input video filename", type = str)
+parser.add_argument("-w", "--winsize", help="Optical flow window size", default = 10, type = int)
+parser.add_argument("-fd", "--framedist", help="Distance between frames", default = 1, type = int)
+parser.add_argument("-min", "--minmag", help="Minimum speed for pixels to update, out of 255", default = 50, type = int)
+
+args = parser.parse_args()
+
+filename = args.input
+thres = args.winsize
+frame_dist = args.framedist
+mag_thresh = args.minmag
 
 def init_normalize(total_frames, cap, sample_size):
 
@@ -48,7 +54,7 @@ def get_mag(prvs, next):
 
 def main():
 
-    cap = cv.VideoCapture(cv.samples.findFile(sys.argv[1]))
+    cap = cv.VideoCapture(cv.samples.findFile(filename))
     total = int(cap.get(7))
 
     _, acc_img_rgb = cap.read()
