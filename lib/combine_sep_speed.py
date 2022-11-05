@@ -5,19 +5,24 @@ import cv2 as cv
 from numpy.lib.function_base import average
 import random
 import numpy as np
-import glob
 from tqdm import tqdm
-import matplotlib.pyplot as plt
 
-thres = int(sys.argv[2])
-frame_dist = int(sys.argv[3])
-depth = int(sys.argv[4])
+import argparse
+parser = argparse.ArgumentParser()
+ 
+parser.add_argument("-i", "--input", help="Path to input video filename", type = str)
+parser.add_argument("-w", "--winsize", help="Optical flow window size", default = 10, type = int)
+parser.add_argument("-fd", "--framedist", help="Distance between frames", default = 1, type = int)
+parser.add_argument("-d", "--depth", help="Depth of mag window analysis", default = 2, type = int)
 
-def takeSecond(elem):
-    return elem[1]
+args = parser.parse_args()
+
+filename = args.input
+thres = args.winsize
+frame_dist = args.framedist
+depth = args.depth
 
 def get_mean_mags(accum_means, mag_in):
-    print(len(accum_means))
     if len(accum_means) < 2^depth + 1:
         new_mag = []
         for mag in mag_in:
@@ -64,7 +69,7 @@ def get_mag(prvs, next):
     return mag
 
 def main():
-    cap = cv.VideoCapture(cv.samples.findFile(sys.argv[1]))
+    cap = cv.VideoCapture(cv.samples.findFile(filename))
     total = int(cap.get(7))
 
     _, fast_img = cap.read()

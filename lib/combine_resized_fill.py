@@ -5,9 +5,7 @@ import cv2 as cv
 from numpy.lib.function_base import average
 import random
 import numpy as np
-import glob
 from tqdm import tqdm
-import matplotlib.pyplot as plt
 import math
 
 import argparse
@@ -29,9 +27,6 @@ ds_factor = args.downscale
 min_mag_r = args.minmag
 max_mag_r = args.maxmag
 pad = args.padding
-
-def takeSecond(elem):
-    return elem[1]
 
 def init_normalize(total_frames, cap, sample_size, thres):
     accum_mag = []

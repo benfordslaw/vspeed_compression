@@ -16,6 +16,12 @@ normalize the video's speed by making faster things smaller than slower things A
 
 `combine_resized_fill.py [-h] [-i INPUT] [-fd FRAMEDIST] [-ds DOWNSCALE] [-min MINMAG] [-max MAXMAG] [-p PADDING] [-nf NO_FILL]`
 
+### combine, separated by speed
+
+normalize the video's speed by making the frame rate of faster things smaller than that of slower things
+
+`combine_sep_speed.py [-h] [-i INPUT] [-w WINSIZE] [-fd FRAMEDIST] [-d DEPTH]`
+
 ### download videos
 
 download and resize a youtube video given a url and maximum dimension
