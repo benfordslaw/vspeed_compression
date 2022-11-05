@@ -8,7 +8,7 @@ from tqdm import tqdm
 import argparse
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-i", "--input", help="Path to input video filename", type = str)
+parser.add_argument("-i", "--input", help="Path to input video filename", type = str, required = True)
 parser.add_argument("-w", "--winsize", help="Optical flow window size", default = 10, type = int)
 parser.add_argument("-fd", "--framedist", help="Distance between frames", default = 1, type = int)
 parser.add_argument("-min", "--minmag", help="Minimum speed for pixels to update, out of 255", default = 50, type = int)

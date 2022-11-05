@@ -8,25 +8,25 @@ various methods to compress a video based on the speed of things moving in it.
 
 reduce each frame to only things that are moving fast enough. condense into the middle of the frame.
 
-`python lib/rip.py [-h] [-i INPUT] [-fd FRAMEDIST] [-min MINMAG] [-max MAXMAG] [-p PADDING] [-o OUTPUT]`
+`python lib/rip.py [-h] -i INPUT [-fd FRAMEDIST] [-min MINMAG] [-max MAXMAG] [-p PADDING] [-o OUTPUT]`
 
 ### combine resized, fill
 
 normalize the video's speed by making faster things smaller than slower things AND fill in the gaps with nearby color values
 
-`python lib/combine_resized_fill.py [-h] [-i INPUT] [-fd FRAMEDIST] [-ds DOWNSCALE] [-min MINMAG] [-max MAXMAG] [-p PADDING] [-o OUTPUT] [-nf]`
+`python lib/combine_resized_fill.py [-h] -i INPUT [-fd FRAMEDIST] [-ds DOWNSCALE] [-min MINMAG] [-max MAXMAG] [-p PADDING] [-o OUTPUT] [-nf]`
 
 ### combine, separated by speed
 
 normalize the video's speed by making the frame rate of faster things smaller than that of slower things
 
-`python lib/combine_sep_speed.py [-h] [-i INPUT] [-w WINSIZE] [-fd FRAMEDIST] [-d DEPTH] [-o OUTPUT]`
+`python lib/combine_sep_speed.py [-h] -i INPUT [-w WINSIZE] [-fd FRAMEDIST] [-d DEPTH] [-o OUTPUT]`
 
 ### update only past threshold
 
 only update parts of a video that are moving faster than a given threshold (out of 255, default 50)
 
-`python lib/update_only_past_thresh.py [-h] [-i INPUT] [-w WINSIZE] [-fd FRAMEDIST] [-min MINMAG] [-o OUTPUT]`
+`python lib/update_only_past_thresh.py [-h] -i INPUT [-w WINSIZE] [-fd FRAMEDIST] [-min MINMAG] [-o OUTPUT]`
 
 ### download videos
 

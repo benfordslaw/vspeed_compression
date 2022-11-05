@@ -9,7 +9,7 @@ import math
 import argparse
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-i", "--input", help="Path to input video filename", type = str)
+parser.add_argument("-i", "--input", help="Path to input video filename", type = str, required = True)
 parser.add_argument("-fd", "--framedist", help="Distance between frames", default = 1, type = int)
 parser.add_argument("-min", "--minmag", help="Lower threshold for window speed shown", default = 0.0, type = float)
 parser.add_argument("-max", "--maxmag", help="Upper threshold for window speed shown", default = 1.0, type = float)
