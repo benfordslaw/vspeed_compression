@@ -1,6 +1,3 @@
-import sys
-sys.path.append('/Users/benkrummenacher/opt/anaconda3/envs/vpype_env/lib/python3.10/site-packages')
-
 import os
 import cv2 as cv
 from numpy.lib.function_base import average
